@@ -1,7 +1,7 @@
 {
-  "name": "platform-user",
+  "name": "service-template",
   "version": "1.0.0",
-  "description": "smart jobs platform user service",
+  "description": "smart jobs platform service template",
   "private": true,
   "egg": {
     "framework": "naf-framework-mongoose"
@@ -26,8 +26,8 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=paltform-user",
-    "stop": "egg-scripts stop --title=paltform-user",
+    "start": "egg-scripts start --daemon --title=service-tmpl",
+    "stop": "egg-scripts stop --title=service-tmpl",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
