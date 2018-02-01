@@ -6,7 +6,7 @@ module.exports = () => {
   // add your config here
   config.cluster = {
     listen: {
-      port: 8101,
+      port: 8000,
     },
   };
 
