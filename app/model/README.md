@@ -1,4 +1,4 @@
-#数据模型
+# 数据模型
 ```
 'use strict';
 const Schema = require('mongoose').Schema;
