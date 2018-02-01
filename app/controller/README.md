@@ -1,4 +1,4 @@
-#Crud控制器
+# Crud控制器
 ```
 'use strict';
 
@@ -15,7 +15,7 @@ class CategoryController extends Controller {
 
 module.exports = CrudController(CategoryController, meta);
 ```
-#Crud描述文档
+# Crud描述文档
 ```
 {
   "create": {
