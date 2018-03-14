@@ -2,11 +2,10 @@
 ```
 'use strict';
 
-const Controller = require('egg').Controller;
 const meta = require('./category.json');
-const { CrudController } = require('naf-framework-mongoose').controller;
+const { CrudController, NafController } = require('naf-framework-mongoose').Controllers;
 
-class CategoryController extends Controller {
+class CategoryController extends NafController {
   constructor(ctx) {
     super(ctx);
     this.service = this.ctx.service.category;
@@ -34,7 +33,23 @@ module.exports = CrudController(CategoryController, meta);
     "options": {
       "sort": ["order", "code"]
     }
-},
+  },
+  "simple": {
+    "parameters": {
+      "query": ["corp.id"]
+    },
+    "service": "query",
+    "options": {
+      "query": ["skip", "limit"],
+      "sort": ["meta.createAt"],
+      "desc": true,
+      "projection": {
+        "title": 1,
+        "corp.name": 1,
+        "meta.createdAt": 1
+      }
+    }
+  },
   "fetch": {
     "query": ["id"]
   }

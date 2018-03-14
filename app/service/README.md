@@ -6,12 +6,11 @@ const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
 const util = require('core-util-is');
 const { BusinessError, ErrorCode } = require('naf-core').Error;
-const service = require('naf-framework-mongoose').service;
-const { CrudService } = service;
+const { CrudService } = require('naf-framework-mongoose').Services;
 
 class CategoryService extends CrudService {
   constructor(ctx) {
-    super(ctx, 'naf_code_category');
+    super(ctx);
     this.model = ctx.model.Category;
     this.mItems = ctx.model.Items;
   }
