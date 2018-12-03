@@ -1,6 +1,6 @@
 'use strict';
 
-const app = 'service-tmpl';
+const app = 'docflow-srv';
 module.exports = {
   apps: [{
     name: app, // 应用名称

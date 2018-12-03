@@ -26,8 +26,8 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=service-tmpl",
-    "stop": "egg-scripts stop --title=service-tmpl",
+    "start": "egg-scripts start --daemon --title=docflow-srv",
+    "stop": "egg-scripts stop --title=docflow-srv",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
@@ -37,7 +37,7 @@
     "ci": "npm run lint && npm run cov",
     "autod": "autod",
     "pm2": "pm2 start",
-    "restart": "pm2 restart service-tmpl"
+    "restart": "pm2 restart docflow-srv"
   },
   "ci": {
     "version": "8"
