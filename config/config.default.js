@@ -26,7 +26,6 @@ module.exports = appInfo => {
   config.mongoose = {
     url: 'mongodb://localhost:27017/oa',
     options: {
-      useMongoClient: true,
       user: 'root',
       pass: 'Ziyouyanfa#@!',
       authSource: 'admin',

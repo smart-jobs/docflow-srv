@@ -13,8 +13,8 @@ module.exports = app => {
   router.post('/draft/post', controller.draft.post);
   router.get('/draft/query', controller.draft.query);
   router.get('/draft/fetch', controller.draft.fetch);
-  router.post('/outbox/remind', controller.outbox.update);
-  router.post('/outbox/finish', controller.outbox.post);
+  router.post('/outbox/remind', controller.outbox.remind);
+  router.post('/outbox/finish', controller.outbox.finish);
   router.get('/outbox/query', controller.outbox.query);
   router.get('/outbox/fetch', controller.outbox.fetch);
 

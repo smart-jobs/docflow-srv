@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const meta = require('.draft.js');
+const meta = require('./.draft.js');
 const Controller = require('egg').Controller;
 const { CrudController } = require('naf-framework-mongoose/lib/controller');
 const { BusinessError, ErrorCode } = require('naf-core').Error;
