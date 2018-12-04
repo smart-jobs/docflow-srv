@@ -8,6 +8,13 @@ module.exports = appInfo => {
 
   // add your config here
   // config.middleware = [];
+
+  config.cluster = {
+    listen: {
+      port: 8301,
+    },
+  };
+
   config.errorMongo = {
     details: true,
   };
@@ -17,12 +24,21 @@ module.exports = appInfo => {
 
   // mongoose config
   config.mongoose = {
-    url: 'mongodb://localhost:27017/platform',
+    url: 'mongodb://localhost:27017/oa',
     options: {
       useMongoClient: true,
       user: 'root',
       pass: 'Ziyouyanfa#@!',
       authSource: 'admin',
+      useNewUrlParser: true,
+      useCreateIndex: true,
+    },
+  };
+
+  // axios service config
+  config.axios = {
+    user: { // 用户查询服务
+      baseUrl: 'http://localhost:8001/api',
     },
   };
 

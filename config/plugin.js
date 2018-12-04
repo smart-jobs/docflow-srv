@@ -4,5 +4,5 @@
 // exports.static = true;
 
 exports.multiTenancy = {
-  enable: false,
+  enable: true,
 };

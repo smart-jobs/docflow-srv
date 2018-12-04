@@ -1,7 +1,7 @@
 {
-  "name": "service-template",
+  "name": "docflow-srv",
   "version": "1.0.0",
-  "description": "smart jobs platform service template",
+  "description": "smart jobs platform docflow service",
   "private": true,
   "egg": {
     "framework": "naf-framework-mongoose"
@@ -9,6 +9,7 @@
   "dependencies": {
     "egg": "^2.14.1",
     "egg-scripts": "^2.10.0",
+    "moment": "^2.22.2",
     "naf-framework-mongoose": "^0.5.17"
   },
   "devDependencies": {
