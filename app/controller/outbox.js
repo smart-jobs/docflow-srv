@@ -14,7 +14,9 @@ class DraftController extends Controller {
 
   // 查询当前系统的公文
   async query() {
-    const { status = DocStatus.POST, skip = 0, limit = 10 } = this.ctx.query;
+    let { status = DocStatus.POST, skip = 0, limit = 10 } = this.ctx.query;
+    if (!_.isUndefined(skip) && !_.isNumber(skip)) skip = Number(skip);
+    if (!_.isUndefined(limit) && !_.isNumber(limit)) limit = Number(limit);
     const res = await this.service.queryAndCount({ status }, { skip, limit, sort: { 'meta.createdAt': -1 } });
     this.ctx.ok(res);
   }

@@ -11,6 +11,7 @@ module.exports = app => {
   router.post('/draft/create', controller.draft.create);
   router.post('/draft/update', controller.draft.update);
   router.post('/draft/post', controller.draft.post);
+  router.post('/draft/delete', controller.draft.delete);
   router.get('/draft/query', controller.draft.query);
   router.get('/draft/fetch', controller.draft.fetch);
   router.post('/outbox/remind', controller.outbox.remind);

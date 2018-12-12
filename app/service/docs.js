@@ -14,20 +14,19 @@ class DocsService extends CrudService {
     this.model = this.ctx.model.Docs;
   }
 
-  async create({ docno, title, content, receiver, attachment, expiredAt, feedback, action }) {
+  async create({ docno, title, content, sender, receiver, attachment, 'meta.expiredAt': expiredAt, feedback, action }) {
     // 检查数据
     assert(_.isString(docno), 'docno不能为空');
     assert(_.isString(title), 'title不能为空');
     assert(_.isString(content), 'content不能为空');
     assert(receiver, 'receiver不能为空');
     assert(_.isArray(receiver), 'receiver必须为数组');
-    assert(!expiredAt || _.isDate(expiredAt), 'expiredAt必须为Date');
     if (!feedback) {
       feedback = { required: false };
     } else {
       assert(_.isObject(feedback), 'feedback必须为对象');
-      assert(feedback.fields, 'feedback.fields不能为空');
-      assert(_.isArray(feedback.fields), 'feedback.fields必须为数组');
+      assert(!feedback.required || feedback.fields, 'feedback.fields不能为空');
+      assert(!feedback.required || _.isArray(feedback.fields), 'feedback.fields必须为数组');
     }
     if (!expiredAt) {
       expiredAt = moment().add(1, 'months').toDate();
@@ -45,8 +44,8 @@ class DocsService extends CrudService {
 
     // TODO:保存数据
     const data = {
-      docno, title, content, receiver, attachment, feedback, status: DocStatus.DRAFT,
-      meta: { createdBy: userid, expiredAt }
+      docno, title, content, sender, receiver, attachment, feedback, status: DocStatus.DRAFT,
+      meta: { createdBy: userid, expiredAt },
     };
 
     const res = await this.model.create(data);
@@ -54,25 +53,22 @@ class DocsService extends CrudService {
     // TODO: 立即发送
     if (action === 'post') {
       console.log('立即发送...');
-      this.postDoc(res._id);
+      this.postDoc(res.id);
     }
 
     return res;
   }
 
-  async update({ id }, { docno, title, content, receiver, attachment, expiredAt, feedback }) {
+  async update({ id }, payload) {
     // 检查数据
+    const { docno, title, content, sender, receiver, attachment } = payload;
     assert(id, 'id不能为空');
-    assert(!docno || _.isString(docno), 'docno不能为空');
-    assert(!title || _.isString(title), 'title不能为空');
-    assert(!content || _.isString(content), 'content不能为空');
+    assert(!docno || _.isString(docno), 'docno必须为字符串');
+    assert(!title || _.isString(title), 'title必须为字符串');
+    assert(!content || _.isString(content), 'content必须为字符串');
+    assert(!sender || _.isString(sender), 'content必须为字符串');
     assert(!receiver || _.isArray(receiver), 'receiver必须为数组');
-    assert(!expiredAt || _.isDate(expiredAt), 'expiredAt必须为Date');
-    if (feedback) {
-      assert(_.isObject(feedback), 'feedback必须为对象');
-      assert(feedback.fields, 'feedback.fields不能为空');
-      assert(_.isArray(feedback.fields), 'feedback.fields必须为数组');
-    }
+    assert(!attachment || _.isArray(attachment), 'attachment必须为数组');
 
     // TODO: 检查用户信息
     const userid = this.ctx.userid;
@@ -90,9 +86,8 @@ class DocsService extends CrudService {
     }
 
     // TODO:保存数据
-    const meta = trimData({ expiredAt, updatedBy: userid });
-    const data = trimData({ docno, title, content, receiver, attachment, feedback, meta });
-    const res = await this.model.findByIdAndUpdate(id, data, { new: true }).exec();
+    const data = trimData(payload);
+    const res = await this.model.findByIdAndUpdate(doc.id, { ...data, 'meta.updatedBy': userid }, { new: true }).exec();
     return res;
   }
 

@@ -18,9 +18,10 @@ class PostService extends CrudService {
     // 检查数据
     assert(_.isString(docid), 'docid不能为空');
     assert(_.isArray(receiver), 'receiver必须为数组');
+    assert(receiver.length > 0, 'receiver不能为空');
 
     // TODO: 1.生成投递单位列表
-    if (receiver === 0) {
+    if (receiver.indexOf('all') !== -1) {
       // TODO: 发送给全部用户
       const rs = await this.ctx.service.axios.user.unitList();
       receiver = rs.map(p => p.code);

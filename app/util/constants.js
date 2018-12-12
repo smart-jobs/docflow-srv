@@ -5,6 +5,7 @@ exports.DocStatus = {
   DRAFT: 'draft', // 草稿
   POST: 'post', // 已发
   DONE: 'done', // 办结
+  ARCHIVE: 'archive', // 归档
 };
 
 // 收文状态

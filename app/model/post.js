@@ -18,7 +18,7 @@ const SchemaDefine = {
   },
   remark: { type: String, maxLength: 500 } // 备注
 };
-const schema = new Schema(SchemaDefine, { 'multi-tenancy': true });
+const schema = new Schema(SchemaDefine, { 'multi-tenancy': true, toJSON: { virtuals: true } });
 schema.index({ status: 1 });
 schema.index({ validity: 1 });
 schema.plugin(metaPlugin);

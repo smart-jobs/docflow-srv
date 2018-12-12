@@ -22,12 +22,16 @@ class InboxController extends Controller {
     } else if (status === PostStatus.NEW) {
       status = { $ne: PostStatus.DONE };
     }
+    if (!_.isUndefined(skip) && !_.isNumber(skip)) skip = Number(skip);
+    if (!_.isUndefined(limit) && !_.isNumber(limit)) limit = Number(limit);
 
     // TODO: 检查用户信息
     const unit = this.ctx.tenant;
     if (!_.isString(unit)) throw new BusinessError(ErrorCode.NOT_LOGIN);
 
-    const res = await this.service.queryAndCount({ unit, status }, { skip, limit, sort: { 'meta.createdAt': -1 } });
+    // const filter = { receiver: { $elemMatch: { $in: [ 'all', unit ] } }, status };
+    const filter = { unit, status };
+    const res = await this.service.queryAndCount(filter, { skip, limit, sort: { 'meta.createdAt': -1 } });
     this.ctx.ok(res);
   }
 }

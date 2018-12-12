@@ -5,18 +5,24 @@
 const Schema = require('mongoose').Schema;
 const metaPlugin = require('naf-framework-mongoose/lib/model/meta-plugin');
 
+// 附件信息
+const Attachment = new Schema({
+  name: { type: String, maxLength: 128 },
+  uri: { type: String, maxLength: 128 },
+}, { _id: false });
+
 // 公文信息
 const SchemaDefine = {
   docno: { type: String, required: true, maxLength: 64 }, // 文号
   title: { type: String, required: false, maxLength: 128 }, // 标题
-  content: { type: String, required: true, maxLength: 10240, select: false }, // 详情
+  content: { type: String, required: true, maxLength: 102400, select: false }, // 详情
   status: { type: String, required: false, maxLength: 64 }, // 发文状态
-  attachment: { type: Array }, // 附件
+  attachment: [ Attachment ], // 附件
   sender: String, // 发文部门
   receiver: [ String ], // 收文单位列表
   feedback: { // 回执信息
     required: Boolean, // 是否回执
-    fields: [ String ], // 回执字段
+    fields: Array, // 回执字段
   },
   meta: {
     expiredAt: Date, // 过期时间
@@ -26,10 +32,11 @@ const SchemaDefine = {
   },
   remark: { type: String, maxLength: 500 } // 备注
 };
-const schema = new Schema(SchemaDefine, { 'multi-tenancy': true });
+const schema = new Schema(SchemaDefine, { 'multi-tenancy': false, toJSON: { virtuals: true } });
 schema.index({ status: 1 });
 schema.index({ 'meta.expiredAt': 1 });
 schema.index({ 'meta.createdBy': 1 });
+schema.index({ 'meta.createdBy': 1, status: 1 });
 schema.plugin(metaPlugin);
 
 module.exports = app => {
