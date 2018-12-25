@@ -4,6 +4,7 @@
 'use strict';
 const Schema = require('mongoose').Schema;
 const metaPlugin = require('naf-framework-mongoose/lib/model/meta-plugin');
+const { DocStatus } = require('../util/constants');
 
 // 附件信息
 const Attachment = new Schema({
@@ -30,7 +31,7 @@ const SchemaDefine = {
     createdBy: String, // 发文用户
     updatedBy: String, // 最后修改用户
   },
-  remark: { type: String, maxLength: 500 } // 备注
+  remark: { type: String, maxLength: 500 }, // 备注
 };
 const schema = new Schema(SchemaDefine, { 'multi-tenancy': false, toJSON: { virtuals: true } });
 schema.index({ status: 1 });
@@ -38,7 +39,22 @@ schema.index({ 'meta.expiredAt': 1 });
 schema.index({ 'meta.createdBy': 1 });
 schema.index({ 'meta.createdBy': 1, status: 1 });
 schema.plugin(metaPlugin);
-
+// Populate Virtuals
+schema.virtual('posts', {
+  ref: 'DocPost', // The model to use
+  localField: '_id', // Find people where `localField`
+  foreignField: 'docid', // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: false,
+});
+schema.post('find', async function(docs) {
+  for (const doc of docs) {
+    if (doc.status === DocStatus.POST) {
+      await doc.populate('posts', 'unit status -_id').execPopulate();
+    }
+  }
+});
 module.exports = app => {
   const { mongoose } = app;
   return mongoose.model('DocInfo', schema, 'oa_docflow_docs');

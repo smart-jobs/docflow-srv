@@ -1,12 +1,15 @@
 module.exports = {
   // 起草公文
   "create": {
-    "requestBody": ["!docno", "!title", "!content", "sender", "receiver", "attachment", "meta.expiredAt", "feedback", "action" ],
+    "parameters": {
+      "query": ["action"],
+    },
+    "requestBody": ["!docno", "!title", "!content", "sender", "receiver", "attachment", "meta.expiredAt", "feedback"],
   },
   // 修改公文信息
   "update": {
     "parameters": {
-      "query": ["!id"],
+      "query": ["!id", "action"],
     },
     "requestBody": [ "docno", "title", "content", "sender", "receiver", "attachment", "meta.expiredAt", "feedback.required", "feedback.fields" ],
   },

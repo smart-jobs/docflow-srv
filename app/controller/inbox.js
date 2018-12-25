@@ -5,6 +5,7 @@ const meta = require('./.inbox.js');
 const Controller = require('egg').Controller;
 const { CrudController } = require('naf-framework-mongoose/lib/controller');
 const { BusinessError, ErrorCode } = require('naf-core').Error;
+// eslint-disable-next-line no-unused-vars
 const { PostStatus } = require('../util/constants');
 
 class InboxController extends Controller {
@@ -17,11 +18,11 @@ class InboxController extends Controller {
   async query() {
     let { status, skip = 0, limit = 10 } = this.ctx.query;
 
-    if (status === PostStatus.DONE) {
-      status = { $eq: PostStatus.DONE };
-    } else if (status === PostStatus.NEW) {
-      status = { $ne: PostStatus.DONE };
-    }
+    // if (status === PostStatus.DONE) {
+    //   status = { $eq: PostStatus.DONE };
+    // } else if (status === PostStatus.NEW) {
+    //   status = { $ne: PostStatus.DONE };
+    // }
     if (!_.isUndefined(skip) && !_.isNumber(skip)) skip = Number(skip);
     if (!_.isUndefined(limit) && !_.isNumber(limit)) limit = Number(limit);
 

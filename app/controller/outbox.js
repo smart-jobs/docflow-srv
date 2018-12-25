@@ -17,9 +17,29 @@ class DraftController extends Controller {
     let { status = DocStatus.POST, skip = 0, limit = 10 } = this.ctx.query;
     if (!_.isUndefined(skip) && !_.isNumber(skip)) skip = Number(skip);
     if (!_.isUndefined(limit) && !_.isNumber(limit)) limit = Number(limit);
-    const res = await this.service.queryAndCount({ status }, { skip, limit, sort: { 'meta.createdAt': -1 } });
+    let filter = { status };
+    if (status === 'feedback') {
+      filter = { status: DocStatus.POST, 'feedback.required': true };
+    }
+    const res = await this.service.queryAndCount(filter, { skip, limit, sort: { 'meta.createdAt': -1 } });
     this.ctx.ok(res);
   }
+
+  // 查询公文回执信息
+  async feedback() {
+    const { docid } = this.ctx.query;
+
+    const service = this.ctx.service.post;
+    // const filter = { receiver: { $elemMatch: { $in: [ 'all', unit ] } }, status };
+    const filter = { docid };
+    let rs = await service.query(filter, { sort: 'unit' });
+    rs = rs.reduce((p, c) => {
+      const a = c.feedback.map(f => [ ...f, c.unit ]);
+      return p.concat(a);
+    }, []);
+    this.ctx.ok({ data: rs });
+  }
+
 }
 
 module.exports = CrudController(DraftController, meta);

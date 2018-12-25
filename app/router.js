@@ -16,8 +16,11 @@ module.exports = app => {
   router.get('/draft/fetch', controller.draft.fetch);
   router.post('/outbox/remind', controller.outbox.remind);
   router.post('/outbox/finish', controller.outbox.finish);
+  router.post('/outbox/archive', controller.outbox.archive);
   router.get('/outbox/query', controller.outbox.query);
   router.get('/outbox/fetch', controller.outbox.fetch);
+  router.get('/outbox/posts', controller.outbox.posts);
+  router.get('/outbox/feedback', controller.outbox.feedback);
 
   // 收文接口
   router.post('/inbox/feedback', controller.inbox.feedback);

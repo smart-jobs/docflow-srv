@@ -14,7 +14,7 @@ class DocsService extends CrudService {
     this.model = this.ctx.model.Docs;
   }
 
-  async create({ docno, title, content, sender, receiver, attachment, 'meta.expiredAt': expiredAt, feedback, action }) {
+  async create({ action }, { docno, title, content, sender, receiver, attachment, 'meta.expiredAt': expiredAt, feedback }) {
     // 检查数据
     assert(_.isString(docno), 'docno不能为空');
     assert(_.isString(title), 'title不能为空');
@@ -48,18 +48,18 @@ class DocsService extends CrudService {
       meta: { createdBy: userid, expiredAt },
     };
 
-    const res = await this.model.create(data);
+    let res = await this.model.create(data);
 
     // TODO: 立即发送
     if (action === 'post') {
       console.log('立即发送...');
-      this.postDoc(res.id);
+      res = await this.post(res);
     }
 
     return res;
   }
 
-  async update({ id }, payload) {
+  async update({ id, action }, payload) {
     // 检查数据
     const { docno, title, content, sender, receiver, attachment } = payload;
     assert(id, 'id不能为空');
@@ -87,7 +87,14 @@ class DocsService extends CrudService {
 
     // TODO:保存数据
     const data = trimData(payload);
-    const res = await this.model.findByIdAndUpdate(doc.id, { ...data, 'meta.updatedBy': userid }, { new: true }).exec();
+    let res = await this.model.findByIdAndUpdate(doc.id, { ...data, 'meta.updatedBy': userid }, { new: true }).exec();
+
+    // TODO: 立即发送
+    if (action === 'post') {
+      console.log('立即发送...');
+      res = await this.post(res);
+    }
+
     return res;
   }
 
@@ -111,7 +118,7 @@ class DocsService extends CrudService {
     }
 
     // TODO: 批量投递
-    await this.ctx.service.post.batchCreate({ docid: doc._id, receiver: doc.receiver });
+    await this.ctx.service.post.batchCreate({ docid: doc.id, receiver: doc.receiver });
 
     // TODO: 修改公文状态
     doc.status = DocStatus.POST;
@@ -156,6 +163,27 @@ class DocsService extends CrudService {
 
     // TODO: 修改公文状态
     doc.status = DocStatus.DONE;
+    doc.meta.updatedBy = userid;
+    return await doc.save();
+  }
+
+  // 归档公文
+  async archive({ id }) {
+    // 检查数据
+    assert(id, 'id不能为空');
+
+    // TODO: 检查用户信息
+    const userid = this.ctx.userid;
+    if (!_.isString(userid)) throw new BusinessError(ErrorCode.NOT_LOGIN);
+
+    // TODO:检查数据是否存在
+    const doc = await this.model.findById(id).exec();
+    if (isNullOrUndefined(doc)) {
+      throw new BusinessError(ErrorCode.DATA_NOT_EXIST);
+    }
+
+    // TODO: 修改公文状态
+    doc.status = DocStatus.ARCHIVE;
     doc.meta.updatedBy = userid;
     return await doc.save();
   }
