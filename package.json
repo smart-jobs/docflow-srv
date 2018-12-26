@@ -10,7 +10,8 @@
     "egg": "^2.14.1",
     "egg-scripts": "^2.10.0",
     "moment": "^2.22.2",
-    "naf-framework-mongoose": "^0.5.17"
+    "naf-framework-mongoose": "^0.5.17",
+    "xlsx": "^0.14.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",

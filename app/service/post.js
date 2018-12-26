@@ -1,7 +1,13 @@
 'use strict';
 
+const util = require('util');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const assert = require('assert');
 const _ = require('lodash');
+const xlsx = require('xlsx');
+const moment = require('moment');
 const { BusinessError, ErrorCode } = require('naf-core').Error;
 const { CrudService } = require('naf-framework-mongoose/lib/service');
 const { PostStatus, DocStatus } = require('../util/constants');
@@ -110,6 +116,35 @@ class PostService extends CrudService {
     const rs = await this.model.find(query).exec();
     // TODO: 发送通知
     console.log('remind:', rs);
+  }
+
+  async exportFeedback({ docid }) {
+    // 检查数据
+    assert(_.isString(docid), 'docid不能为空');
+
+    // TODO: 读取公文信息和发文信息
+    const doc = await this.mDocs.findById(docid).exec();
+    if (!doc) {
+      throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '公文信息不存在');
+    }
+
+    let rs = await this.query({ docid }, { sort: 'unit' });
+    rs = rs.reduce((p, c) => {
+      const a = c.feedback.map(f => [ ...f, c.unit ]);
+      return p.concat(a);
+    }, []);
+
+    const header = [ ...doc.feedback.fields, '所在学校' ];
+    const name = moment().format('YYYYMMDDHHmmss') + '.xlsx';
+    const mkdtemp = util.promisify(fs.mkdtemp);
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'docflow-'));
+    const file = path.join(dir, name);
+
+    const wb = xlsx.utils.book_new();
+    const ws = xlsx.utils.aoa_to_sheet([ header, ...rs ]);
+    xlsx.utils.book_append_sheet(wb, ws);
+    xlsx.writeFile(wb, file);
+    return { dir, name };
   }
 }
 

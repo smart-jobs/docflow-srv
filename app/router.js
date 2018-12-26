@@ -20,7 +20,8 @@ module.exports = app => {
   router.get('/outbox/query', controller.outbox.query);
   router.get('/outbox/fetch', controller.outbox.fetch);
   router.get('/outbox/posts', controller.outbox.posts);
-  router.get('/outbox/feedback', controller.outbox.feedback);
+  router.get('/feedback/list', controller.outbox.feedback);
+  router.get('/feedback/export', controller.outbox.export);
 
   // 收文接口
   router.post('/inbox/feedback', controller.inbox.feedback);

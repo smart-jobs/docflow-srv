@@ -1,6 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+
 const meta = require('./.outbox.js');
 const Controller = require('egg').Controller;
 const { CrudController } = require('naf-framework-mongoose/lib/controller');
@@ -38,6 +41,16 @@ class DraftController extends Controller {
       return p.concat(a);
     }, []);
     this.ctx.ok({ data: rs });
+  }
+
+  async export() {
+    const { docid } = this.ctx.query;
+
+    const service = this.ctx.service.post;
+    const res = await service.exportFeedback({ docid });
+    this.ctx.set('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    this.ctx.set('content-disposition', 'attachment;filename=' + res.name);
+    this.ctx.body = fs.createReadStream(path.join(res.dir, res.name));
   }
 
 }
