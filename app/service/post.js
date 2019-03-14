@@ -116,6 +116,12 @@ class PostService extends CrudService {
     const rs = await this.model.find(query).exec();
     // TODO: 发送通知
     console.log('remind:', rs);
+    const { agent_id } = this.app.config.axios.ddapi;
+    const userid_list	 = '';
+    const msg = { msgtype: 'text', text: { content: '消息内容' } };
+    const data = { agent_id, userid_list, msg };
+    const res = await this.service.axios.ddapi.message(data);
+    this.ctx.logger.debug('【发送通知消息】', res);
   }
 
   async exportFeedback({ docid }) {

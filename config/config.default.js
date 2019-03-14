@@ -39,6 +39,10 @@ module.exports = appInfo => {
     user: { // 用户查询服务
       baseUrl: 'http://localhost:8001/api',
     },
+    ddapi: { // dingtalk接口服务
+      baseUrl: 'http://smart.chinahuian.cn/ddapi/dd',
+      agent_id: 213726900,
+    },
   };
 
   return config;

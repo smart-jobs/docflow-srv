@@ -18,6 +18,7 @@ const schema = new Schema(SchemaDefine, { toJSON: {
     return { ..._.pick(ret, 'docno', 'title'),
       feedback: ret.feedback && ret.feedback.required,
       attachment: _.isArray(ret.attachment) && ret.attachment.length > 0,
+      updatedBy: ret.meta && ret.meta.updatedBy,
     };
   },
 } });
