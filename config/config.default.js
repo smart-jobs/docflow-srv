@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = appInfo => {
-  const config = exports = {};
+  const config = (exports = {});
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1517455121740_7922';
@@ -11,15 +11,15 @@ module.exports = appInfo => {
 
   config.cluster = {
     listen: {
-      port: 8301,
-    },
+      port: 8301
+    }
   };
 
   config.errorMongo = {
-    details: true,
+    details: true
   };
   config.errorHanler = {
-    details: true,
+    details: true
   };
 
   // mongoose config
@@ -30,19 +30,32 @@ module.exports = appInfo => {
       pass: 'Ziyouyanfa#@!',
       authSource: 'admin',
       useNewUrlParser: true,
-      useCreateIndex: true,
-    },
+      useCreateIndex: true
+    }
   };
 
   // axios service config
   config.axios = {
-    user: { // 用户查询服务
-      baseUrl: 'http://localhost:8001/api',
+    user: {
+      // 用户查询服务
+      baseUrl: 'http://localhost:8001/api'
+    }
+    // ddapi: { // dingtalk接口服务
+    //   baseUrl: 'http://smart.chinahuian.cn/ddapi/dd',
+    //   agent_id: 213726900,
+    // },
+  };
+
+  // mq config
+  config.amqp = {
+    client: {
+      hostname: '127.0.0.1',
+      username: 'smart',
+      password: 'smart123',
+      vhost: 'smart'
     },
-    ddapi: { // dingtalk接口服务
-      baseUrl: 'http://smart.chinahuian.cn/ddapi/dd',
-      agent_id: 213726900,
-    },
+    app: true,
+    agent: true
   };
 
   return config;

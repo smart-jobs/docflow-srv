@@ -4,5 +4,10 @@
 // exports.static = true;
 
 exports.multiTenancy = {
+  enable: true
+};
+
+exports.amqp = {
   enable: true,
+  package: 'egg-naf-amqp'
 };

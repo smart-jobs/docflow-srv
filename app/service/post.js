@@ -59,7 +59,7 @@ class PostService extends CrudService {
       throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '公文信息不存在');
     }
 
-    let post = await this.model.findOne({ docid, unit }).exec();
+    let post = await this.model.findOne({ docid, unit });
     if (!post) throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '收文信息不存在');
 
     // TODO: 更新收文状态
@@ -88,7 +88,7 @@ class PostService extends CrudService {
       throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '公文信息不存在');
     }
 
-    let post = await this.model.findOne({ docid, unit }).exec();
+    let post = await this.model.findOne({ docid, unit });
     if (!post) throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '收文信息不存在');
 
     // TODO: 检查公文状态
@@ -113,15 +113,26 @@ class PostService extends CrudService {
     }
 
     const query = trimData({ docid, unit, status: { $ne: PostStatus.DONE } });
-    const rs = await this.model.find(query).exec();
+    const rs = await this.model.find(query);
     // TODO: 发送通知
-    console.log('remind:', rs);
-    const { agent_id } = this.app.config.axios.ddapi;
-    const userid_list	 = '';
-    const msg = { msgtype: 'text', text: { content: '消息内容' } };
-    const data = { agent_id, userid_list, msg };
-    const res = await this.service.axios.ddapi.message(data);
-    this.ctx.logger.debug('【发送通知消息】', res);
+    // console.log('remind:', rs);
+    // const { agent_id } = this.app.config.axios.ddapi;
+    // const userid_list	 = '';
+    // const msg = { msgtype: 'text', text: { content: '消息内容' } };
+    // const data = { agent_id, userid_list, msg };
+    // const res = await this.service.axios.ddapi.message(data);
+    // this.ctx.logger.debug('【发送通知消息】', res);
+    // TODO: 发送提醒消息到MQ
+    const units = rs.map(p => p.unit);
+    const msg = `您有新的公文《${doc.title}》,请尽快查收办理。`;
+    const data = JSON.stringify({ units, msg });
+    const { mq } = this.ctx;
+    const ex = 'service.docs';
+    if (mq) {
+      await mq.topic(ex, 'remind', data, { durable: true });
+    } else {
+      this.ctx.logger.error('!!!!!!没有配置MQ插件!!!!!!');
+    }
   }
 
   async exportFeedback({ docid }) {
@@ -129,7 +140,7 @@ class PostService extends CrudService {
     assert(_.isString(docid), 'docid不能为空');
 
     // TODO: 读取公文信息和发文信息
-    const doc = await this.mDocs.findById(docid).exec();
+    const doc = await this.mDocs.findById(docid);
     if (!doc) {
       throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '公文信息不存在');
     }
